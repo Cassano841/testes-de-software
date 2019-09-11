@@ -1,0 +1,11 @@
+br\edu\ifrs\restinga\testes\nicholas\superloja\modelo\dao\ProdutoDAO.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\controller\Produtos.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\modelo\entidade\Produto.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\erro\RequisicaoInvalida.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\controller\Generos.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\modelo\dao\GeneroDAO.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\modelo\dao\ModeloDAO.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\modelo\entidade\Genero.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\modelo\entidade\Modelo.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\SuperlojaApplication.class
+br\edu\ifrs\restinga\testes\nicholas\superloja\erro\NaoEncontrado.class
