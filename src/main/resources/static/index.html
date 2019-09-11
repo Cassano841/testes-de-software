@@ -33,13 +33,17 @@
                     <input class="form-control" type="text" id="id" readonly />
                     <label>Nome:</label>
                     <input class="form-control" type="text" id="nome" />
+                    <label>Tipo:</label>
+                    <input class="form-control" type="text" id="tipo" />
                     <label>Valor:</label>
                     <input class="form-control" type="number" id="valor" />
+                    <label>Estoque:</label>
+                    <input class="form-control" type="text" id="estoque" readonly />
                 </div>
             </form>
 
-            <button type="button" id="confirmar" onclick="produtoController.confirmar()">Confirmar</button>
-            <button type="button" id="limpar" onclick="produtoController.limpar()">Limpar</button>
+            <button type="button" class="btn btn-primary" id="confirmar" onclick="produtoController.confirmar()">Confirmar</button>
+            <button type="button" class="btn btn-secondary" id="limpar" onclick="produtoController.limpar()">Limpar</button>
         </div><br>
         <div>
             <table class="table">
@@ -49,7 +53,9 @@
                         <th scope="row">Id</th>
                         <th scope="row">Nome</th>
                         <th scope="row">Valor</th>
-                        <th scope="row" colspan="2" alig>Ações</th>
+                        <th scope="row">Tipo</th>
+                        <th scope="row">Estoque</th> 
+                        <th scope="row" colspan="2">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpoTabela"></tbody>
