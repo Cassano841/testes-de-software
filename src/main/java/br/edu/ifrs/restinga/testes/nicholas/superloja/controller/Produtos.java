@@ -3,12 +3,9 @@ package br.edu.ifrs.restinga.testes.nicholas.superloja.controller;
 import br.edu.ifrs.restinga.testes.nicholas.superloja.erro.NaoEncontrado;
 import br.edu.ifrs.restinga.testes.nicholas.superloja.erro.RequisicaoInvalida;
 import br.edu.ifrs.restinga.testes.nicholas.superloja.modelo.dao.GeneroDAO;
-import br.edu.ifrs.restinga.testes.nicholas.superloja.modelo.dao.ModeloDAO;
 import br.edu.ifrs.restinga.testes.nicholas.superloja.modelo.dao.ProdutoDAO;
 import br.edu.ifrs.restinga.testes.nicholas.superloja.modelo.entidade.Genero;
-import br.edu.ifrs.restinga.testes.nicholas.superloja.modelo.entidade.Modelo;
 import br.edu.ifrs.restinga.testes.nicholas.superloja.modelo.entidade.Produto;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,42 +30,21 @@ public class Produtos {
     ProdutoDAO produtoDAO;
     
     @Autowired
-    ModeloDAO modeloDAO;
-    
-    @Autowired
     GeneroDAO generoDAO;
     
-    @RequestMapping(path = "/produtos/pesquisar/valor", method = RequestMethod.GET)
+    @RequestMapping(path = "/produtos/pesquisar/tipo", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<Produto> pesquisaValor(
-            @RequestParam float inicio,
-            @RequestParam float fim
+    public Iterable<Produto> pesquisaTipo(
+            @RequestParam(required = false) String contem,
+            @RequestParam(required = false) String comeca
             ) {
-        return produtoDAO.findByValorBetween(inicio, fim);
+        if(contem!=null)
+            return produtoDAO.findByTipoContaining(contem);
+        else if(comeca!=null)
+            return produtoDAO.findByTipoStartingWith(comeca);
+        else 
+            throw new RequisicaoInvalida("Indicar contem ou comeca");
     }
-    
-    
-    @RequestMapping(path = "/produtos/pesquisar/genero", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public Iterable<Produto> pesquisaGenero(
-            @RequestParam(required = false) Integer id,
-            @RequestParam(required = false) Boolean perecivel) {
-        if(perecivel!=null&&id!=null) {
-            throw new RequisicaoInvalida("Informar ou id ou perecivel!");
-        }
-        if(perecivel!=null) {
-            return produtoDAO.findByGeneroPerecivel(perecivel);
-        } else if(id!=null) {
-            Optional<Genero> optionalGenero = generoDAO.findById(id);
-            if(!optionalGenero.isPresent())
-                throw new NaoEncontrado("ID não encontrado!");
-            Genero genero = optionalGenero.get();
-            return produtoDAO.findByGenero(genero);
-        } else {
-            throw new RequisicaoInvalida("Informar id ou perecivel!");
-        }
-    }
-    
 
     @RequestMapping(path = "/produtos/pesquisar/nome", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -83,8 +59,6 @@ public class Produtos {
         else 
             throw new RequisicaoInvalida("Indicar contem ou comeca");
     }
-
-    
     
     @RequestMapping(path = "/produtos/", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
@@ -111,8 +85,6 @@ public class Produtos {
         } else {
             throw new NaoEncontrado("ID não encontrada!");
         }
-                
-        
     }
     
     @RequestMapping(path="/produtos/{id}", method = RequestMethod.PUT)
@@ -120,14 +92,22 @@ public class Produtos {
     public void atualizar(@PathVariable int id, @RequestBody Produto produto) {
         final Produto produtoBanco = this.buscar(id);
 
-        if(produto.getValor()<0) {
+        if(produto.getValor() <= 0) {
             throw new RequisicaoInvalida("Valor do produto deve ser maior que 0");
-        }
+        } else if (produto.getNome() == ""){
+            throw new RequisicaoInvalida("Nome deve ser preenchido!");
+        } else if (produto.getTipo() == ""){
+            throw new RequisicaoInvalida("Tipo do produto deve ser preenchido!");
+        } else if (produto.getEstoque() < 0){
+            throw new RequisicaoInvalida("Estoque deve ser preenchido!");
+        } else {
         
         produtoBanco.setNome(produto.getNome());
         produtoBanco.setValor(produto.getValor());
-
-        produtoBanco.setGenero(produto.getGenero());
+        produtoBanco.setTipo(produto.getTipo());
+        produtoBanco.setEstoque(produto.getEstoque());
+        
+        }
         produtoDAO.save(produtoBanco);
     }
     
@@ -135,31 +115,17 @@ public class Produtos {
     @RequestMapping(path = "/produtos/", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Produto cadastrar(@RequestBody Produto produto) {
-        if(produto.getValor()<0) {
+        if(produto.getValor() <= 0) {
             throw new RequisicaoInvalida("Valor do produto deve ser maior que 0");
+        } else if (produto.getNome() == ""){
+            throw new RequisicaoInvalida("Nome deve ser preenchido!");
+        } else if (produto.getTipo() == ""){
+            throw new RequisicaoInvalida("Tipo do produto deve ser preenchido!");
+        } else if (produto.getEstoque() < 0){
+            throw new RequisicaoInvalida("Estoque deve ser preenchido!");
         } else {
-            
             Produto produtoBanco = produtoDAO.save(produto);
             return produtoBanco;
         }
     }
-
-    @RequestMapping(path = "/produtos/{idProduto}/modelos/", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public Modelo cadastrarModelo(@PathVariable int idProduto, @RequestBody Modelo modelo) {
-        Produto produtoBanco = this.buscar(idProduto);
-        modelo.setId(0);
-        Modelo modeloBanco=modeloDAO.save(modelo);
-        produtoBanco.getModelos().add(modeloBanco);
-        produtoDAO.save(produtoBanco);
-        return modeloBanco;
-    } 
-
-    @RequestMapping(path = "/produtos/{idProduto}/modelos/", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
-    public List<Modelo> listarModelo(@PathVariable int idProduto) {
-        return this.buscar(idProduto).getModelos();
-    }
-
-  
 }
