@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cadastro Produtos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/ProdutoController.js"></script>
+    <script>
+        let produtoController = new ProdutoController();
+        produtoController.listar();
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light justify-content-between">
+        <a class="navbar-brand">Teste de Software</a>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="text" oninput="produtoController.pesquisar()" id="pesquisar"
+                placeholder="Pesquisar" />
+        </form>
+    </nav>
+
+    <div class="container">
+        <div>
+            <h1>Cadastro:</h1>
+            <form>
+                <div class="form-group">
+                    <label>Id:</label>
+                    <input class="form-control" type="text" id="id" readonly />
+                    <label>Nome:</label>
+                    <input class="form-control" type="text" id="nome" />
+                    <label>Tipo:</label>
+                    <input class="form-control" type="text" id="tipo" />
+                    <label>Valor:</label>
+                    <input class="form-control" type="number" id="valor"/>
+                    <label>Estoque:</label>
+                    <input class="form-control" type="text" id="estoque"/>
+                </div>
+            </form>
+
+            <button type="button" class="btn btn-primary" id="confirmar" onclick="produtoController.confirmar()">Confirmar</button>
+            <button type="button" class="btn btn-secondary" id="limpar" onclick="produtoController.limpar()">Limpar</button>
+        </div><br>
+        <div>
+            <table class="table">
+                <h2>Estoque:</h2>
+                <thead>
+                    <tr>
+                        <th scope="row">Id</th>
+                        <th scope="row">Nome</th>
+                        <th scope="row">Valor</th>
+                        <th scope="row">Tipo</th>
+                        <th scope="row">Estoque</th> 
+                        <th scope="row" colspan="2">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela"></tbody>
+            </table>
+            <br><br>
+        </div>
+    </div>
+</body>
+
+</html>
